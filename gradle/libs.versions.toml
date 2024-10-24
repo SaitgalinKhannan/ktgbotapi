@@ -3,12 +3,13 @@
 kotlin = "2.0.21"
 kotlin-serialization = "1.7.3"
 kotlin-coroutines = "1.9.0"
+kotlin-io = "0.5.4"
 
 javax-activation = "1.1.1"
 
 korlibs = "5.4.0"
 uuid = "0.8.4"
-ktor = "2.3.12"
+ktor = "3.0.0"
 
 ksp = "2.0.21-1.0.25"
 kotlin-poet = "1.18.1"
@@ -29,6 +30,7 @@ kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin"
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 kotlin-serialization-properties = { module = "org.jetbrains.kotlinx:kotlinx-serialization-properties", version.ref = "kotlin-serialization" }
+kotlin-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlin-io" }
 kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
 kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -43,8 +45,8 @@ ktor-server-host-common = { module = "io.ktor:ktor-server-host-common", version.
 
 javax-activation = { module = "javax.activation:activation", version.ref = "javax-activation" }
 
-korlibs-klock =  { module = "com.soywiz.korge:korlibs-time", version.ref = "korlibs" }
-korlibs-krypto =  { module = "com.soywiz.korge:korlibs-crypto", version.ref = "korlibs" }
+korlibs-klock = { module = "com.soywiz.korge:korlibs-time", version.ref = "korlibs" }
+korlibs-krypto = { module = "com.soywiz.korge:korlibs-crypto", version.ref = "korlibs" }
 
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 

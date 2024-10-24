@@ -2,7 +2,6 @@ package dev.inmo.tgbotapi.extensions.utils.extensions
 
 import dev.inmo.tgbotapi.abstracts.WithPreviewChat
 import dev.inmo.tgbotapi.abstracts.types.WithBusinessConnectionId
-import dev.inmo.tgbotapi.abstracts.types.WithOptionalBusinessConnectionId
 import dev.inmo.tgbotapi.extensions.utils.usernameChatOrNull
 import dev.inmo.tgbotapi.extensions.utils.whenUsernameChat
 import dev.inmo.tgbotapi.types.ChatIdentifier
@@ -22,14 +21,14 @@ import dev.inmo.tgbotapi.utils.extensions.threadIdOrNull
 inline fun WithPreviewChat.sameChat(chatId: ChatIdentifier) =
     chat.id == chatId || (chatId is Username && chat.whenUsernameChat {
         it.username == chatId
-    } ?: false)
+    } == true)
 
 /**
  * @return true in case if [this] message is placed in the [chat]
  */
 @Suppress("NOTHING_TO_INLINE")
 inline fun WithPreviewChat.sameChat(chat: Chat) =
-    sameChat(chat.id) || chat.usernameChatOrNull()?.username?.let { sameChat(it) } ?: false
+    sameChat(chat.id) || chat.usernameChatOrNull()?.username?.let { sameChat(it) } == true
 
 /**
  * @return true in case if [this] message is placed in the same chat that [other]

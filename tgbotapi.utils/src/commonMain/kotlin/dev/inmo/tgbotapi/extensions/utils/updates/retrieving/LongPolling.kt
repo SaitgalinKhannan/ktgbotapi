@@ -75,7 +75,7 @@ fun TelegramBot.longPollingFlow(
             /**
              * Dirty hack for cases when the media group was retrieved not fully:
              *
-             * We are throw out the last media group and will reretrieve it again in the next get updates
+             * We are throw out the last media group and will reretrieve it again in the next get updates,
              * and it will guarantee that it is full
              */
             val updates = if (
@@ -87,7 +87,7 @@ fun TelegramBot.longPollingFlow(
                 converted
             }
 
-            safelyWithResult {
+            runCatchingSafely {
                 for (update in updates) {
                     send(update)
 

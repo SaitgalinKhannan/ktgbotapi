@@ -89,7 +89,7 @@ class MultipleClientKtorRequestsExecutor (
         requestsLimiter,
         jsonFormatter,
         pipelineStepsHolder,
-        client.engineConfig.threadsCount,
+        4,
         logger,
         { platformClientCopy(client) }
     )

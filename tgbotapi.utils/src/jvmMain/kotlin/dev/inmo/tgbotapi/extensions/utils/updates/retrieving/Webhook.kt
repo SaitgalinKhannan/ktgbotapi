@@ -10,6 +10,7 @@ import dev.inmo.tgbotapi.types.update.abstracts.UpdateDeserializationStrategy
 import dev.inmo.tgbotapi.updateshandlers.*
 import dev.inmo.tgbotapi.updateshandlers.webhook.WebhookPrivateKeyConfig
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.engine.*
 import io.ktor.server.request.receiveText
@@ -55,7 +56,7 @@ fun Route.includeWebhookHandlingInRoute(
                 call.respond(HttpStatusCode.InternalServerError)
             }.getOrThrow()
         } catch (e: Throwable) {
-            exceptionsHandler ?.invoke(e)
+            exceptionsHandler?.invoke(e)
         }
     }
 }
@@ -101,20 +102,28 @@ fun startListenWebhooks(
     privateKeyConfig: WebhookPrivateKeyConfig? = null,
     scope: CoroutineScope = CoroutineScope(Executors.newFixedThreadPool(4).asCoroutineDispatcher()),
     mediaGroupsDebounceTimeMillis: Long = 1000L,
-    additionalApplicationEngineEnvironmentConfigurator: ApplicationEngineEnvironmentBuilder.() -> Unit = {},
+    additionalApplicationEngineEnvironmentConfigurator: ApplicationEnvironmentBuilder.() -> Unit = {},
     block: UpdateReceiver<Update>
-): ApplicationEngine {
-    val env = applicationEngineEnvironment {
+): EmbeddedServer<ApplicationEngine, out ApplicationEngine.Configuration> {
+    val env = applicationEnvironment {
+        additionalApplicationEngineEnvironmentConfigurator()
+    }
 
-        module {
-            routing {
-                listenRoute ?.also {
-                    createRouteFromPath(it).includeWebhookHandlingInRoute(scope, exceptionsHandler, mediaGroupsDebounceTimeMillis, block)
-                } ?: includeWebhookHandlingInRoute(scope, exceptionsHandler, mediaGroupsDebounceTimeMillis, block)
-            }
+    val module: Application.() -> Unit = {
+        routing {
+            listenRoute?.also {
+                createRouteFromPath(it).includeWebhookHandlingInRoute(
+                    scope,
+                    exceptionsHandler,
+                    mediaGroupsDebounceTimeMillis,
+                    block
+                )
+            } ?: includeWebhookHandlingInRoute(scope, exceptionsHandler, mediaGroupsDebounceTimeMillis, block)
         }
+    }
 
-        privateKeyConfig ?.let {
+    val configure: ApplicationEngine.Configuration.() -> Unit = {
+        privateKeyConfig?.let {
             sslConnector(
                 privateKeyConfig.keyStore,
                 privateKeyConfig.aliasName,
@@ -128,11 +137,9 @@ fun startListenWebhooks(
             host = listenHost
             port = listenPort
         }
-
-        additionalApplicationEngineEnvironmentConfigurator()
     }
 
-    return embeddedServer(engineFactory, env).also {
+    return embeddedServer(engineFactory, env, configure, module).also {
         it.start(false)
     }
 }
@@ -162,11 +169,22 @@ suspend fun RequestsExecutor.setWebhookInfoAndStartListenWebhooks(
     privateKeyConfig: WebhookPrivateKeyConfig? = null,
     scope: CoroutineScope = CoroutineScope(Executors.newFixedThreadPool(4).asCoroutineDispatcher()),
     mediaGroupsDebounceTimeMillis: Long = 1000L,
-    additionalApplicationEngineEnvironmentConfigurator: ApplicationEngineEnvironmentBuilder.() -> Unit = {},
+    additionalApplicationEngineEnvironmentConfigurator: ApplicationEnvironmentBuilder.() -> Unit = {},
     block: UpdateReceiver<Update>
-): ApplicationEngine = try {
+): EmbeddedServer<ApplicationEngine, out ApplicationEngine.Configuration> = try {
     execute(setWebhookRequest)
-    startListenWebhooks(listenPort, engineFactory, exceptionsHandler, listenHost, listenRoute, privateKeyConfig, scope, mediaGroupsDebounceTimeMillis, additionalApplicationEngineEnvironmentConfigurator, block)
+    startListenWebhooks(
+        listenPort,
+        engineFactory,
+        exceptionsHandler,
+        listenHost,
+        listenRoute,
+        privateKeyConfig,
+        scope,
+        mediaGroupsDebounceTimeMillis,
+        additionalApplicationEngineEnvironmentConfigurator,
+        block
+    )
 } catch (e: Exception) {
     throw e
 }

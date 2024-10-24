@@ -21,13 +21,13 @@ enum class SlotMachineReelImage(val text: String, val number: Int) {
  * @return First [SlotMachineReelImage] with [SlotMachineReelImage.number] equal to receiver OR [SlotMachineReelImage.SEVEN]
  */
 val Int.asSlotMachineReelImage
-    get() = SlotMachineReelImage.values().firstOrNull { it.number == this } ?: SlotMachineReelImage.SEVEN
+    get() = SlotMachineReelImage.entries.firstOrNull { it.number == this } ?: SlotMachineReelImage.SEVEN
 
 /**
  * @return First [SlotMachineReelImage] with [SlotMachineReelImage.text] equal to receiver OR [SlotMachineReelImage.SEVEN]
  */
 val String.asSlotMachineReelImage
-    get() = SlotMachineReelImage.values().firstOrNull { it.text == this } ?: SlotMachineReelImage.SEVEN
+    get() = SlotMachineReelImage.entries.firstOrNull { it.text == this } ?: SlotMachineReelImage.SEVEN
 
 @Serializable
 data class SlotMachineResult(

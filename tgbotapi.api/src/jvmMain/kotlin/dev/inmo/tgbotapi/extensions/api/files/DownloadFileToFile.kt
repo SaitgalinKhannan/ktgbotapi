@@ -10,7 +10,6 @@ import dev.inmo.tgbotapi.types.message.content.MediaContent
 import io.ktor.util.cio.use
 import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
-import io.ktor.utils.io.copyTo
 import kotlinx.coroutines.job
 import java.io.File
 import kotlin.coroutines.coroutineContext
